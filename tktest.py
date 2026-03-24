@@ -118,7 +118,7 @@ def convert():
                 continue
 
             #Creates a VideoFileClip variable with the video file that can be manipulated
-            clip = VideoFileClip(f.inputFile)
+            clip = VideoFileClip(f.inputFolder+"/"+i)
             #Shortens the video by a small percentage to remove any dead frames (For some reason, all clips have them at the end)
             clip = clip.subclipped(0, clip.duration * clipDuration)
             #Creates the new video YAY!
