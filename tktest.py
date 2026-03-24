@@ -8,7 +8,7 @@ class GlobalVariables():
         self.inputFolder = None
         self.outputFolder = None
         self.code = None
-        self.file = None
+        self.ext = None
 #Function used to change label text for Error Message on the bottom right and the Input/Output labels in the top right
 #Takes in 2 parameters: 
 #name: used to see which label to change
@@ -55,22 +55,22 @@ def fileType():
     #Over complicated if statements
     if v.get() == 4:
         f.code = "libtheora"
-        f.file = ".ogv"
+        f.ext = ".ogv"
     elif v.get() == 5:
         f.code = "libvpx"
-        f.file = ".webm"
+        f.ext = ".webm"
     elif v.get() == 6:
         f.code = ""
-        f.file = ".avi"
+        f.ext = ".avi"
     #For some reason these 3 file types use the same code
     else:
         f.code = "libx264"
         if v.get() == 1:
-            f.file = ".mp4"
+            f.ext = ".mp4"
         elif v.get() == 2:
-            f.file = ".mkv"
+            f.ext = ".mkv"
         elif v.get() == 3:
-            f.file = ".mov"
+            f.ext = ".mov"
 #convert(): function used to covert the file or the entire folder of videos into the desired type while skipping files that were already converted
 def convert():
     #Makes sure the function uses global variables instead of local variables with the same name
@@ -79,6 +79,9 @@ def convert():
         changeText("error","No Output Selected")
         return
     #Checks if user wants to change a single file
+    if f.ext is None:
+        changeText("error", "No File Type Selected")
+        return
     if not f.inputFile is None:
         #Removes the absolute location and gets only the file name
         name = f.inputFile.split("/")[-1]
@@ -91,7 +94,7 @@ def convert():
         #Gets file path of output folder to check if going to make a duplicate
         contents2 = os.listdir(f.outputFolder)
         #Checks if duplicate exits
-        if name+f.file in contents2:
+        if name+f.ext in contents2:
             #Throws error due to duplicate file
             changeText("error", "Duplicate File Located")
             #Reset input text and file
@@ -100,7 +103,7 @@ def convert():
             #Exits function
             return
         #Creates the new video YAY!
-        clip.write_videofile(f.outputFolder+"/"+name+f.file, codec=f.code)
+        clip.write_videofile(f.outputFolder+"/"+name+f.ext, codec=f.code)
         #Reset input text and file
         f.inputFile = None
         changeText("input", "")
@@ -114,7 +117,7 @@ def convert():
             #Removes file type from all file names
             name = i[:i.find(".")]
             #Checks if duplicate exits in outputFolder
-            if name+f.file in contents2:
+            if name+f.ext in contents2:
                 continue
 
             #Creates a VideoFileClip variable with the video file that can be manipulated
@@ -122,7 +125,7 @@ def convert():
             #Shortens the video by a small percentage to remove any dead frames (For some reason, all clips have them at the end)
             clip = clip.subclipped(0, clip.duration * clipDuration)
             #Creates the new video YAY!
-            clip.write_videofile(f.outputFolder+"/"+name+f.file, codec=f.code)
+            clip.write_videofile(f.outputFolder+"/"+name+f.ext, codec=f.code)
         #Reset input text and file
         f.inputFolder = None
         changeText("input", "")
